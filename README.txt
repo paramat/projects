@@ -1,4 +1,4 @@
-projects 0.1.0 by paramat
-For Minetest 0.4.9 dev
+projects 0.1.1 by paramat
+For Minetest
 Depends default
 Licenses: code WTFPL
