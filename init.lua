@@ -1,4 +1,4 @@
--- projects 0.1.4 by paramat
+-- projects 0.1.5 by paramat
 -- For Minetest
 -- Depends default
 -- License: code WTFPL
@@ -256,9 +256,10 @@ minetest.register_abm({
 		--local c_horie = minetest.get_content_id("projects:horie")
 		--local c_horiw = minetest.get_content_id("projects:horiw")
 
+		local len = math.random(16, 64)
 		local vm = minetest.get_voxel_manip()
 		local pos1 = {x=x-1, y=y-1, z=z+1}
-		local pos2 = {x=x+4, y=y+3, z=z+32}
+		local pos2 = {x=x+4, y=y+3, z=z+len}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 		local data = vm:get_data()
@@ -277,25 +278,25 @@ minetest.register_abm({
 
 		for i = -1, 4 do
 		for j = -1, 3 do
-		for k = 1, 32 do
+		for k = 1, len do
 			local vi = area:index(x + i, y + j, z + k)
-			if j == 3 and (i == 1 or i == 2) then
-				data[vi] = c_glass
-			elseif i == -1 or i == 4 or j == -1 or j == 3 or k == 32 then
+			if i == -1 or i == 4 or j == -1 or (j == 3 and (i <= 0 or i >= 3)) then
 				data[vi] = c_brick
+			elseif j == 3 or k == len then
+				data[vi] = c_glass
 			end
 		end
 		end
 		end
 
-		for k = 1, 32 do
-			if k <= 31 and math.random() < 0.1 then
+		for k = 1, len do
+			if k < len and math.random() < 0.1 then
 				local vi = area:index(x - 1, y, z + k)
 				data[vi] = c_flatw
 				local vi = area:index(x - 1, y + 1, z + k)
 				data[vi] = c_air
 			end
-			if k <= 31 and math.random() < 0.1 then
+			if k < len and math.random() < 0.1 then
 				local vi = area:index(x + 4, y, z + k)
 				data[vi] = c_flate
 				local vi = area:index(x + 4, y + 1, z + k)
@@ -332,8 +333,9 @@ minetest.register_abm({
 		--local c_horie = minetest.get_content_id("projects:horie")
 		--local c_horiw = minetest.get_content_id("projects:horiw")
 
+		local len = math.random(16, 64)
 		local vm = minetest.get_voxel_manip()
-		local pos1 = {x=x-1, y=y-1, z=z-32}
+		local pos1 = {x=x-1, y=y-1, z=z-len}
 		local pos2 = {x=x+4, y=y+3, z=z-1}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
@@ -353,25 +355,25 @@ minetest.register_abm({
 
 		for i = -1, 4 do
 		for j = -1, 3 do
-		for k = 1, 32 do
+		for k = 1,len do
 			local vi = area:index(x + i, y + j, z - k)
-			if j == 3 and (i == 1 or i == 2) then
-				data[vi] = c_glass
-			elseif i == -1 or i == 4 or j == -1 or j == 3 or k == 32 then
+			if i == -1 or i == 4 or j == -1 or (j == 3 and (i <= 0 or i >= 3)) then
 				data[vi] = c_brick
+			elseif j == 3 or k == len then
+				data[vi] = c_glass
 			end
 		end
 		end
 		end
 
-		for k = 1, 32 do
-			if k <= 31 and math.random() < 0.1 then
+		for k = 1, len do
+			if k < len and math.random() < 0.1 then
 				local vi = area:index(x - 1, y, z - k)
 				data[vi] = c_flatw
 				local vi = area:index(x - 1, y + 1, z - k)
 				data[vi] = c_air
 			end
-			if k <= 31 and math.random() < 0.1 then
+			if k < len and math.random() < 0.1 then
 				local vi = area:index(x + 4, y, z - k)
 				data[vi] = c_flate
 				local vi = area:index(x + 4, y + 1, z - k)
@@ -408,9 +410,10 @@ minetest.register_abm({
 		--local c_horie = minetest.get_content_id("projects:horie")
 		--local c_horiw = minetest.get_content_id("projects:horiw")
 
+		local len = math.random(16, 64)
 		local vm = minetest.get_voxel_manip()
 		local pos1 = {x=x+1, y=y-1, z=z-1}
-		local pos2 = {x=x+32, y=y+3, z=z+4}
+		local pos2 = {x=x+len, y=y+3, z=z+4}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 		local data = vm:get_data()
@@ -427,27 +430,27 @@ minetest.register_abm({
 			end
 		end
 
-		for i = 1, 32 do
+		for i = 1, len do
 		for j = -1, 3 do
 		for k = -1, 4 do
 			local vi = area:index(x + i, y + j, z + k)
-			if j == 3 and (k == 1 or k == 2) then
-				data[vi] = c_glass
-			elseif k == -1 or k == 4 or j == -1 or j == 3 or i == 32 then
+			if k == -1 or k == 4 or j == -1 or (j == 3 and (k <= 0 or k >= 3)) then
 				data[vi] = c_brick
+			elseif j == 3 or i == len then
+				data[vi] = c_glass
 			end
 		end
 		end
 		end
 
-		for i = 1, 32 do
-			if i <= 31 and math.random() < 0.1 then
+		for i = 1, len do
+			if i < len and math.random() < 0.1 then
 				local vi = area:index(x + i, y, z - 1)
 				data[vi] = c_flats
 				local vi = area:index(x + i, y + 1, z - 1)
 				data[vi] = c_air
 			end
-			if i <= 31 and math.random() < 0.1 then
+			if i < len and math.random() < 0.1 then
 				local vi = area:index(x + i, y, z + 4)
 				data[vi] = c_flatn
 				local vi = area:index(x + i, y + 1, z + 4)
@@ -484,8 +487,9 @@ minetest.register_abm({
 		--local c_horie = minetest.get_content_id("projects:horie")
 		--local c_horiw = minetest.get_content_id("projects:horiw")
 
+		local len = math.random(16, 64)
 		local vm = minetest.get_voxel_manip()
-		local pos1 = {x=x-32, y=y-1, z=z-1}
+		local pos1 = {x=x-len, y=y-1, z=z-1}
 		local pos2 = {x=x-1, y=y+3, z=z+4}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
@@ -503,27 +507,27 @@ minetest.register_abm({
 			end
 		end
 
-		for i = 1, 32 do
+		for i = 1, len do
 		for j = -1, 3 do
 		for k = -1, 4 do
 			local vi = area:index(x - i, y + j, z + k)
-			if j == 3 and (k == 1 or k == 2) then
-				data[vi] = c_glass
-			elseif k == -1 or k == 4 or j == -1 or j == 3 or i == 32 then
+			if k == -1 or k == 4 or j == -1 or (j == 3 and (k <= 0 or k >= 3)) then
 				data[vi] = c_brick
+			elseif j == 3 or i == len then
+				data[vi] = c_glass
 			end
 		end
 		end
 		end
 
-		for i = 1, 32 do
-			if i <= 31 and math.random() < 0.1 then
+		for i = 1, len do
+			if i < len and math.random() < 0.1 then
 				local vi = area:index(x - i, y, z - 1)
 				data[vi] = c_flats
 				local vi = area:index(x - i, y + 1, z - 1)
 				data[vi] = c_air
 			end
-			if i <= 31 and math.random() < 0.1 then
+			if i < len and math.random() < 0.1 then
 				local vi = area:index(x - i, y, z + 4)
 				data[vi] = c_flatn
 				local vi = area:index(x - i, y + 1, z + 4)
