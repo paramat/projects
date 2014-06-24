@@ -1,4 +1,4 @@
--- projects 0.1.3 by paramat
+-- projects 0.1.4 by paramat
 -- For Minetest
 -- Depends default
 -- License: code WTFPL
@@ -315,7 +315,7 @@ minetest.register_abm({
 
 minetest.register_abm({
 	nodenames = {"projects:horis"},
-	interval = 19,
+	interval = 23,
 	chance = 1,
 	action = function(pos, node)
 		local x = pos.x
@@ -391,7 +391,7 @@ minetest.register_abm({
 
 minetest.register_abm({
 	nodenames = {"projects:horie"},
-	interval = 19,
+	interval = 29,
 	chance = 1,
 	action = function(pos, node)
 		local x = pos.x
@@ -467,7 +467,7 @@ minetest.register_abm({
 
 minetest.register_abm({
 	nodenames = {"projects:horiw"},
-	interval = 19,
+	interval = 31,
 	chance = 1,
 	action = function(pos, node)
 		local x = pos.x
@@ -529,6 +529,208 @@ minetest.register_abm({
 				local vi = area:index(x - i, y + 1, z + 4)
 				data[vi] = c_air
 			end
+		end
+
+		vm:set_data(data)
+		vm:write_to_map()
+		vm:update_map()
+
+		minetest.add_node(pos, {name="air"})
+	end,
+})
+
+-- vertical space above. spawn node is at minimum point of rampwell
+
+minetest.register_abm({
+	nodenames = {"projects:verta"},
+	interval = 37,
+	chance = 1,
+	action = function(pos, node)
+		local x = pos.x
+		local y = pos.y
+		local z = pos.z
+		local c_air = minetest.get_content_id("air")
+		local c_ignore = minetest.get_content_id("ignore")
+		local c_brick = minetest.get_content_id("default:sandstonebrick")
+		local c_horin = minetest.get_content_id("projects:horin")
+		local c_horis = minetest.get_content_id("projects:horis")
+		local c_horie = minetest.get_content_id("projects:horie")
+		local c_horiw = minetest.get_content_id("projects:horiw")
+		local c_verta = minetest.get_content_id("projects:verta")
+		local c_verta = minetest.get_content_id("projects:vertopa")
+
+		local vm = minetest.get_voxel_manip()
+		local pos1 = {x=x-6, y=y+1, z=z-6}
+		local pos2 = {x=x+23, y=y+5, z=z+23}
+		local emin, emax = vm:read_from_map(pos1, pos2)
+		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+		local data = vm:get_data()
+
+		for i = -6, 23 do
+		for j = 1, 5 do
+		for k = -6, 23 do
+			local vi = area:index(x + i, y + j, z + k)
+			if i == -6 or i == 23 or k == -6 or k == 23
+			or ((j == 1 or j == 5) and (i <= -1 or i >= 18 or k <= -1 or k >= 18)) then
+				data[vi] = c_brick
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+		end
+
+		local horini = math.random(-5, 19)
+		for i = horini, horini + 3 do
+		for j = 2, 4 do
+			local vi = area:index(x + i, y + j, z + 23)
+			if i == horini and j == 2 then
+				data[vi] = c_horin
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+
+		local horisi = math.random(-5, 19)
+		for i = horisi, horisi + 3 do
+		for j = 2, 4 do
+			local vi = area:index(x + i, y + j, z - 6)
+			if i == horisi and j == 2 then
+				data[vi] = c_horis
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+
+		local horiek = math.random(-5, 19)
+		for k = horiek, horiek + 3 do
+		for j = 2, 4 do
+			local vi = area:index(x + 23, y + j, z + k)
+			if k == horiek and j == 2 then
+				data[vi] = c_horie
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+
+		local horiwk = math.random(-5, 19)
+		for k = horiwk, horiwk + 3 do
+		for j = 2, 4 do
+			local vi = area:index(x - 6, y + j, z + k)
+			if k == horiwk and j == 2 then
+				data[vi] = c_horiw
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+
+		local vi = area:index(x, y + 5, z)
+		if math.random() < 0.9 then
+			data[vi] = c_verta
+		else
+			data[vi] = c_vertopa
+		end
+
+		vm:set_data(data)
+		vm:write_to_map()
+		vm:update_map()
+
+		minetest.add_node(pos, {name="air"})
+	end,
+})
+
+-- vertical space top above. spawn node is at minimum point of rampwell
+
+minetest.register_abm({
+	nodenames = {"projects:vertopa"},
+	interval = 41,
+	chance = 1,
+	action = function(pos, node)
+		local x = pos.x
+		local y = pos.y
+		local z = pos.z
+		local c_air = minetest.get_content_id("air")
+		local c_ignore = minetest.get_content_id("ignore")
+		local c_brick = minetest.get_content_id("default:sandstonebrick")
+		local c_glass = minetest.get_content_id("default:obsidian_glass")
+		local c_horin = minetest.get_content_id("projects:horin")
+		local c_horis = minetest.get_content_id("projects:horis")
+		local c_horie = minetest.get_content_id("projects:horie")
+		local c_horiw = minetest.get_content_id("projects:horiw")
+
+		local vm = minetest.get_voxel_manip()
+		local pos1 = {x=x-6, y=y+1, z=z-6}
+		local pos2 = {x=x+23, y=y+5, z=z+23}
+		local emin, emax = vm:read_from_map(pos1, pos2)
+		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+		local data = vm:get_data()
+
+		for i = -6, 23 do
+		for j = 1, 5 do
+		for k = -6, 23 do
+			local vi = area:index(x + i, y + j, z + k)
+			if i == -6 or i == 23 or k == -6 or k == 23
+			or (j == 1 and (i <= -1 or i >= 18 or k <= -1 or k >= 18)) then
+				data[vi] = c_brick
+			elseif j == 5 then
+				data[vi] = c_glass
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+		end
+
+		local horini = math.random(-5, 19)
+		for i = horini, horini + 3 do
+		for j = 2, 4 do
+			local vi = area:index(x + i, y + j, z + 23)
+			if i == horini and j == 2 then
+				data[vi] = c_horin
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+
+		local horisi = math.random(-5, 19)
+		for i = horisi, horisi + 3 do
+		for j = 2, 4 do
+			local vi = area:index(x + i, y + j, z - 6)
+			if i == horisi and j == 2 then
+				data[vi] = c_horis
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+
+		local horiek = math.random(-5, 19)
+		for k = horiek, horiek + 3 do
+		for j = 2, 4 do
+			local vi = area:index(x + 23, y + j, z + k)
+			if k == horiek and j == 2 then
+				data[vi] = c_horie
+			else
+				data[vi] = c_air
+			end
+		end
+		end
+
+		local horiwk = math.random(-5, 19)
+		for k = horiwk, horiwk + 3 do
+		for j = 2, 4 do
+			local vi = area:index(x - 6, y + j, z + k)
+			if k == horiwk and j == 2 then
+				data[vi] = c_horiw
+			else
+				data[vi] = c_air
+			end
+		end
 		end
 
 		vm:set_data(data)
