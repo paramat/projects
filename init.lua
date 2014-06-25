@@ -1,4 +1,4 @@
--- projects 0.1.6 by paramat
+-- projects 0.1.7 by paramat
 -- For Minetest
 -- Depends default
 -- License: code WTFPL
@@ -544,7 +544,7 @@ minetest.register_abm({
 		local z = pos.z
 		local c_air = minetest.get_content_id("air")
 		local c_brick = minetest.get_content_id("default:sandstonebrick")
-		local c_slab = minetest.get_content_id("stairs:slab_stone")
+		local c_slab = minetest.get_content_id("stairs:slab_stonebrick")
 		local c_glass = minetest.get_content_id("default:obsidian_glass")
 		local c_horin = minetest.get_content_id("projects:horin")
 		local c_horis = minetest.get_content_id("projects:horis")
@@ -578,10 +578,13 @@ minetest.register_abm({
 			for jj = 1, 2 do
 			for kk = 0, 1 do
 				local vi = area:index(x + ii, y + ramp + jj, z + 10 + ramp * 2 + kk)
+				local vie = area:index(x + 19 - ii, y + ramp + jj, z + 19 - ramp * 2 - kk)
 				if jj == 1 then
 					data[vi] = c_brick
+					data[vie] = c_brick
 				elseif (jj == 2 and kk == 1) then
 					data[vi] = c_slab
+					data[vie] = c_slab
 				end
 			end
 			end
@@ -638,7 +641,7 @@ minetest.register_abm({
 		local y = pos.y
 		local z = pos.z
 		local c_brick = minetest.get_content_id("default:sandstonebrick")
-		local c_slab = minetest.get_content_id("stairs:slab_stone")
+		local c_slab = minetest.get_content_id("stairs:slab_stonebrick")
 		local c_glass = minetest.get_content_id("default:obsidian_glass")
 		local c_verta = minetest.get_content_id("projects:verta")
 
@@ -667,10 +670,13 @@ minetest.register_abm({
 			for jj = 1, 2 do
 			for kk = 0, 1 do
 				local vi = area:index(x + ii, y + ramp + jj, z + 10 + ramp * 2 + kk)
+				local vie = area:index(x + 19 - ii, y + ramp + jj, z + 19 - ramp * 2 - kk)
 				if jj == 1 then
 					data[vi] = c_brick
+					data[vie] = c_brick
 				elseif (jj == 2 and kk == 1) then
 					data[vi] = c_slab
+					data[vie] = c_slab
 				end
 			end
 			end
