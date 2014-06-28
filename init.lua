@@ -1,4 +1,4 @@
--- projects 0.1.7 by paramat
+-- projects 0.1.8 by paramat
 -- For Minetest
 -- Depends default
 -- License: code WTFPL
@@ -104,23 +104,43 @@ minetest.register_abm({
 		local z = pos.z
 		local c_air = minetest.get_content_id("air")
 		local c_ignore = minetest.get_content_id("ignore")
+		local c_brick = minetest.get_content_id("default:sandstonebrick")
+
 		local vm = minetest.get_voxel_manip()
-		local pos1 = {x=x-6, y=y-1, z=z+1}
+		local pos1 = {x=x-6, y=y-1, z=z}
 		local pos2 = {x=x+1, y=y+3, z=z+8}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 		local data = vm:get_data()
-		for vi in area:iterp(pos1, pos2) do
+
+		for i = -6, 1 do -- check volume is clear
+		for j = -1, 3 do
+		for k = 1, 8 do
+			local vi = area:index(x + i, y + j, z + k)
 			local nodid = data[vi]
-			if nodid ~= c_air and nodid ~= c_ignore then
-				minetest.add_node(pos, {name="default:sandstonebrick"})
-				pos.y = pos.y + 1
-				minetest.add_node(pos, {name="default:sandstonebrick"})
+			if nodid ~= c_air and nodid ~= c_ignore then -- if volume obstructed then seal up doorway, replace spawner
+				local vi = area:index(x, y, z)
+				data[vi] = c_brick
+				local via = area:index(x, y+1, z)
+				data[via] = c_brick
+
+				vm:set_data(data)
+				vm:write_to_map()
+				vm:update_map()
 				return
 			end
 		end
-		minetest.add_node(pos, {name="air"})
-		local path = minetest.get_modpath("projects") .. "/schems/flat.mts"
+		end
+		end
+
+		local vi = area:index(x, y, z) -- volume checked so replace spawner with air
+		data[vi] = c_air
+
+		vm:set_data(data)
+		vm:write_to_map()
+		vm:update_map()
+
+		local path = minetest.get_modpath("projects") .. "/schems/flat.mts" -- spawn flat
 		minetest.place_schematic({x=x-6, y=y-1, z=z+1}, path, 90, nil, true)
 	end,
 })
@@ -137,22 +157,42 @@ minetest.register_abm({
 		local z = pos.z
 		local c_air = minetest.get_content_id("air")
 		local c_ignore = minetest.get_content_id("ignore")
+		local c_brick = minetest.get_content_id("default:sandstonebrick")
+
 		local vm = minetest.get_voxel_manip()
 		local pos1 = {x=x-1, y=y-1, z=z-8}
-		local pos2 = {x=x+6, y=y+3, z=z-1}
+		local pos2 = {x=x+6, y=y+3, z=z}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 		local data = vm:get_data()
-		for vi in area:iterp(pos1, pos2) do
+
+		for i = -1, 6 do -- check volume is clear
+		for j = -1, 3 do
+		for k = -8, -1 do
+			local vi = area:index(x + i, y + j, z + k)
 			local nodid = data[vi]
-			if nodid ~= c_air and nodid ~= c_ignore then
-				minetest.add_node(pos, {name="default:sandstonebrick"})
-				pos.y = pos.y + 1
-				minetest.add_node(pos, {name="default:sandstonebrick"})
+			if nodid ~= c_air and nodid ~= c_ignore then -- if volume obstructed then seal up doorway, replace spawner
+				local vi = area:index(x, y, z)
+				data[vi] = c_brick
+				local via = area:index(x, y+1, z)
+				data[via] = c_brick
+
+				vm:set_data(data)
+				vm:write_to_map()
+				vm:update_map()
 				return
 			end
 		end
-		minetest.add_node(pos, {name="air"})
+		end
+		end
+
+		local vi = area:index(x, y, z) -- volume checked so replace spawner with air
+		data[vi] = c_air
+
+		vm:set_data(data)
+		vm:write_to_map()
+		vm:update_map()
+
 		local path = minetest.get_modpath("projects") .. "/schems/flat.mts"
 		minetest.place_schematic({x=pos.x-1, y=pos.y-1, z=pos.z-8}, path, 270, nil, true)
 	end,
@@ -170,22 +210,42 @@ minetest.register_abm({
 		local z = pos.z
 		local c_air = minetest.get_content_id("air")
 		local c_ignore = minetest.get_content_id("ignore")
+		local c_brick = minetest.get_content_id("default:sandstonebrick")
+
 		local vm = minetest.get_voxel_manip()
-		local pos1 = {x=x+1, y=y-1, z=z-1}
+		local pos1 = {x=x, y=y-1, z=z-1}
 		local pos2 = {x=x+8, y=y+3, z=z+6}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 		local data = vm:get_data()
-		for vi in area:iterp(pos1, pos2) do
+
+		for i = 1, 8 do -- check volume is clear
+		for j = -1, 3 do
+		for k = -1, 6 do
+			local vi = area:index(x + i, y + j, z + k)
 			local nodid = data[vi]
-			if nodid ~= c_air and nodid ~= c_ignore then
-				minetest.add_node(pos, {name="default:sandstonebrick"})
-				pos.y = pos.y + 1
-				minetest.add_node(pos, {name="default:sandstonebrick"})
+			if nodid ~= c_air and nodid ~= c_ignore then -- if volume obstructed then seal up doorway, replace spawner
+				local vi = area:index(x, y, z)
+				data[vi] = c_brick
+				local via = area:index(x, y+1, z)
+				data[via] = c_brick
+
+				vm:set_data(data)
+				vm:write_to_map()
+				vm:update_map()
 				return
 			end
 		end
-		minetest.add_node(pos, {name="air"})
+		end
+		end
+
+		local vi = area:index(x, y, z) -- volume checked so replace spawner with air
+		data[vi] = c_air
+
+		vm:set_data(data)
+		vm:write_to_map()
+		vm:update_map()
+
 		local path = minetest.get_modpath("projects") .. "/schems/flat.mts"
 		minetest.place_schematic({x=pos.x+1, y=pos.y-1, z=pos.z-1}, path, 180, nil, true)
 	end,
@@ -203,22 +263,41 @@ minetest.register_abm({
 		local z = pos.z
 		local c_air = minetest.get_content_id("air")
 		local c_ignore = minetest.get_content_id("ignore")
+		local c_brick = minetest.get_content_id("default:sandstonebrick")
+
 		local vm = minetest.get_voxel_manip()
 		local pos1 = {x=x-8, y=y-1, z=z-6}
-		local pos2 = {x=x-1, y=y+3, z=z+1}
+		local pos2 = {x=x, y=y+3, z=z+1}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 		local data = vm:get_data()
-		for vi in area:iterp(pos1, pos2) do
+
+		for i = -8, -1 do -- check volume is clear
+		for j = -1, 3 do
+		for k = -6, 1 do
+			local vi = area:index(x + i, y + j, z + k)
 			local nodid = data[vi]
-			if nodid ~= c_air and nodid ~= c_ignore then
-				minetest.add_node(pos, {name="default:sandstonebrick"})
-				pos.y = pos.y + 1
-				minetest.add_node(pos, {name="default:sandstonebrick"})
+			if nodid ~= c_air and nodid ~= c_ignore then -- if volume obstructed then seal up doorway, replace spawner
+				local vi = area:index(x, y, z)
+				data[vi] = c_brick
+				local via = area:index(x, y+1, z)
+				data[via] = c_brick
+				vm:set_data(data)
+				vm:write_to_map()
+				vm:update_map()
 				return
 			end
 		end
-		minetest.add_node(pos, {name="air"})
+		end
+		end
+
+		local vi = area:index(x, y, z) -- volume checked so replace spawner with air
+		data[vi] = c_air
+
+		vm:set_data(data)
+		vm:write_to_map()
+		vm:update_map()
+
 		local path = minetest.get_modpath("projects") .. "/schems/flat.mts"
 		minetest.place_schematic({x=pos.x-8, y=pos.y-1, z=pos.z-6}, path, 0, nil, true)
 	end,
@@ -240,29 +319,34 @@ minetest.register_abm({
 		local c_glass = minetest.get_content_id("default:obsidian_glass")
 		local c_flate = minetest.get_content_id("projects:flate")
 		local c_flatw = minetest.get_content_id("projects:flatw")
-		--local c_horin = minetest.get_content_id("projects:horin")
-		--local c_horis = minetest.get_content_id("projects:horis")
-		--local c_horie = minetest.get_content_id("projects:horie")
-		--local c_horiw = minetest.get_content_id("projects:horiw")
 
 		local len = math.random(16, 64)
 		local vm = minetest.get_voxel_manip()
-		local pos1 = {x=x-1, y=y-1, z=z+1}
+		local pos1 = {x=x-1, y=y-1, z=z}
 		local pos2 = {x=x+4, y=y+3, z=z+len}
 		local emin, emax = vm:read_from_map(pos1, pos2)
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 		local data = vm:get_data()
 
-		for vi in area:iterp(pos1, pos2) do
+		for i = -1, 4 do -- check volume is clear
+		for j = -1, 3 do
+		for k = 1, len do
+			local vi = area:index(x + i, y + j, z + k)
 			local nodid = data[vi]
-			if nodid ~= c_air and nodid ~= c_ignore then
+			if nodid ~= c_air and nodid ~= c_ignore then -- if volume obstructed then seal up doorway, replace spawner
 				for i = 0, 3 do
 				for j = 0, 2 do
-					minetest.add_node({x=x+i, y=y+j, z=z}, {name="default:sandstonebrick"})
+					local vi = area:index(x+i, y+j, z)
+					data[vi] = c_brick
 				end
 				end
+				vm:set_data(data)
+				vm:write_to_map()
+				vm:update_map()
 				return
 			end
+		end
+		end
 		end
 
 		for i = -1, 4 do
@@ -293,11 +377,12 @@ minetest.register_abm({
 			end
 		end
 
+		local vi = area:index(x, y, z) -- volume checked so replace spawner with air
+		data[vi] = c_air
+
 		vm:set_data(data)
 		vm:write_to_map()
 		vm:update_map()
-
-		minetest.add_node(pos, {name="air"})
 	end,
 })
 
@@ -317,10 +402,6 @@ minetest.register_abm({
 		local c_glass = minetest.get_content_id("default:obsidian_glass")
 		local c_flate = minetest.get_content_id("projects:flate")
 		local c_flatw = minetest.get_content_id("projects:flatw")
-		--local c_horin = minetest.get_content_id("projects:horin")
-		--local c_horis = minetest.get_content_id("projects:horis")
-		--local c_horie = minetest.get_content_id("projects:horie")
-		--local c_horiw = minetest.get_content_id("projects:horiw")
 
 		local len = math.random(16, 64)
 		local vm = minetest.get_voxel_manip()
@@ -394,10 +475,6 @@ minetest.register_abm({
 		local c_glass = minetest.get_content_id("default:obsidian_glass")
 		local c_flatn = minetest.get_content_id("projects:flatn")
 		local c_flats = minetest.get_content_id("projects:flats")
-		--local c_horin = minetest.get_content_id("projects:horin")
-		--local c_horis = minetest.get_content_id("projects:horis")
-		--local c_horie = minetest.get_content_id("projects:horie")
-		--local c_horiw = minetest.get_content_id("projects:horiw")
 
 		local len = math.random(16, 64)
 		local vm = minetest.get_voxel_manip()
@@ -471,10 +548,6 @@ minetest.register_abm({
 		local c_glass = minetest.get_content_id("default:obsidian_glass")
 		local c_flatn = minetest.get_content_id("projects:flatn")
 		local c_flats = minetest.get_content_id("projects:flats")
-		--local c_horin = minetest.get_content_id("projects:horin")
-		--local c_horis = minetest.get_content_id("projects:horis")
-		--local c_horie = minetest.get_content_id("projects:horie")
-		--local c_horiw = minetest.get_content_id("projects:horiw")
 
 		local len = math.random(16, 64)
 		local vm = minetest.get_voxel_manip()
@@ -725,7 +798,8 @@ minetest.register_abm({
 			or ((j == 1 or j == 5) and (k <= 9 or k >= 20))
 			or ((i == 9 or i == 10) and (k >= 9 and k <= 20)) then
 				data[vi] = c_brick
-			elseif i == 0 or i == 19 or j == 5 then
+			elseif i == 0 or i == 19 or j == 5
+			or (j == 2 and ((k == 9 and i <= 8) or (k == 20 and i >= 11))) then
 				data[vi] = c_glass
 			end
 		end
